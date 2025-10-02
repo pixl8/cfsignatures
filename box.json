@@ -1,0 +1,31 @@
+{
+    "name":"CF Signatures",
+    "author":"Pixl8 Group",
+    "version":"$VERSION_NUMBER",
+    "location":"$DOWNLOAD_URL",
+    "slug":"cfsignatures",
+    "type":"modules",
+    "homepage":"https://github.com/pixl8/cfsignatures",
+    "documentation":"https://github.com/pixl8/cfsignatures",
+    "repository":{
+        "type":"git",
+        "url":"https://github.com/pixl8/cfsignatures"
+    },
+    "shortDescription":"A module to provide cryptographic signature verification and generation for CFML applications.",
+    "contributors":[
+        "Dominic Watson <watson.dominic@gmail.com>"
+    ],
+    "ignore":[
+        "**/.*",
+        "tests"
+    ],
+    "devDependencies":{
+        "testbox":"6.4.0"
+    },
+    "installPaths":{
+        "testbox":"tests/testbox/"
+    },
+    "testbox":{
+        "runner":"http://127.0.0.1:6555/runtests.cfm"
+    }
+}
