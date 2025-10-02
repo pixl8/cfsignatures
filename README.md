@@ -36,13 +36,13 @@ var keyPair = cfsignatures.generateKeys( "ES256" );
 var mySig = cfsignatures.sign(
 	  payload    = myInputString
 	, signingKey = keyPair.privatekey
-	, algorithm  = "RS256"
+	, algorithm  = "ES256"
 );
 var isValid = cfsignatures.verify(
 	  signature    = signatureToVerify
 	, payload      = myInputString
 	, verifyingKey = keyPair.publickey
-	, algorithm    = "RS256"
+	, algorithm    = "ES256"
 );
 ```
 
