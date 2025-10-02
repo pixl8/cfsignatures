@@ -4,7 +4,7 @@
 
 
 This extension provides a simple API for verifying and generating cryptographic signatures. Useful in various
-operations where signatures are uses such as [JWT]()
+operations where signatures are used such as [JWT](https://www.rfc-editor.org/rfc/rfc7519)
 
 ## Usage
 
