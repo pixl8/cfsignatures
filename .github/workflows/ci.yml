@@ -30,7 +30,7 @@ jobs:
         uses: pixl8/github-action-box-test@v3
         with:
           test_dir: /tests
-          test_server_json: /server-cfsignaturestests.json
+          test_server_json: /tests/server-cfsignaturestests.json
           output_file: /tests/test-results.txt
 
       - name: Upload Test Results Artifacts
