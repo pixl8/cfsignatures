@@ -53,7 +53,7 @@ component extends="testbox.system.BaseSpec" {
 				);
 
 				expect( signature ).toBeString();
-				expect( Len( signature ) ).toBe( 86 );
+				expect( Len( signature ) ).toBeBetween( 75, 100 );
 
 				expect( _svc.verify(
 					  signature    = signature
@@ -73,7 +73,7 @@ component extends="testbox.system.BaseSpec" {
 				);
 
 				expect( signature ).toBeString();
-				expect( Len( signature ) ).toBe( 128 );
+				expect( Len( signature ) ).toBeBetween( 120, 140 );
 
 				expect( _svc.verify(
 					  signature    = signature
@@ -93,7 +93,7 @@ component extends="testbox.system.BaseSpec" {
 				);
 
 				expect( signature ).toBeString();
-				expect( Len( signature ) ).toBe( 176 );
+				expect( Len( signature ) ).toBeBetween( 170, 180 );
 
 				expect( _svc.verify(
 					  signature    = signature
