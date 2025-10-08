@@ -76,5 +76,40 @@ component extends="testbox.system.BaseSpec" {
 				}
 			} );
 		} );
+
+		describe( "validateSigningKey()", function() {
+			it( "should return true if the key is a valid signing key", function() {
+				var keys = _svc.generateKeys( "RS256" );
+				expect( _svc.validateSigningKey( keys.privateKey, "RS256" ) ).toBeTrue();
+				keys = _svc.generateKeys( "ES256" );
+				expect( _svc.validateSigningKey( keys.privateKey, "ES256" ) ).toBeTrue();
+
+				expect( _svc.validateSigningKey( _svc.generateKeys( "HS256" ), "HS256" ) ).toBeTrue();
+			} );
+
+			it( "should return false if the key is not a valid signing key", function() {
+				expect( _svc.validateSigningKey( "blah", "RS256" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( "blah", "ES256" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( "blah", "HS256" ) ).toBeFalse();
+			} );
+		} );
+
+		describe( "validateVerifyingKey()", function() {
+			it( "should return true if the key is a valid verifying key", function() {
+				var keys = _svc.generateKeys( "RS256" );
+				expect( _svc.validateVerifyingKey( keys.publicKey, "RS256" ) ).toBeTrue();
+				keys = _svc.generateKeys( "ES256" );
+				expect( _svc.validateVerifyingKey( keys.publicKey, "ES256" ) ).toBeTrue();
+				expect( _svc.validateVerifyingKey( _svc.generateKeys( "HS256" ), "HS256" ) ).toBeTrue();
+			} );
+
+			it( "should return false if the key is not a valid verifying key", function() {
+				expect( _svc.validateVerifyingKey( "blah", "RS256" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( "blah", "ES256" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( "blah", "HS256" ) ).toBeFalse();
+			} );
+		} );
+
+
 	}
 }

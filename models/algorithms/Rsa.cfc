@@ -47,6 +47,22 @@ component {
 		};
 	}
 
+	public boolean function validateSigningKey( required string key ) {
+		try {
+			return isInstanceOf( _getPrivateKey( arguments.key ), "java.security.PrivateKey" );
+		} catch( any e ) {}
+
+		return false;
+	}
+
+	public boolean function validateVerifyingKey( required string key ) {
+		try {
+			return isInstanceOf( _getPublicKey( arguments.key ), "java.security.PublicKey" );
+		} catch( any e ) {}
+
+		return false;
+	}
+
 // PRIVATE HELPERS
 	private function _base64UrlEscape( value ){
 		return ReReplace( ReReplace( ReReplace( arguments.value, "\+", "-", "all" ), "\/", "_", "all" ) ,"=", "", "all" )

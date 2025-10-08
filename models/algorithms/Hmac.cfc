@@ -50,8 +50,31 @@ component {
 		return ToBase64( keyGen.generateKey().getEncoded() );
 	}
 
+	function validateSigningKey( required string key, required string algorithm ) {
+		return _validateKey( arguments.key, arguments.algorithm );
+	}
+
+	function validateVerifyingKey( required string key, required string algorithm ) {
+		return _validateKey( arguments.key, arguments.algorithm );
+	}
+
 // PRIVATE HELPERS
 	private function _base64UrlEscape( required string value ){
 		return ReReplace( ReReplace( ReReplace( arguments.value, "\+", "-", "all" ), "\/", "_", "all" ) ,"=", "", "all" )
+	}
+
+	private function _validateKey( required string key, required string algorithm ) {
+		var keyLen  = ArrayLen( ToBinary( arguments.key ) );
+
+		switch( arguments.algorithm ) {
+			case "HmacSHA256":
+				return keyLen == 32;
+			case "HmacSHA384":
+				return keyLen == 48;
+			case "HmacSHA512":
+				return keyLen == 64;
+		}
+
+		return false;
 	}
 }

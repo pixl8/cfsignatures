@@ -103,5 +103,85 @@ component extends="testbox.system.BaseSpec" {
 				) ).toBeTrue();
 			} );
 		} );
+
+		describe( "validateSigningKey()", function() {
+			it( "should validate a signing key for SHA256withECDSA", function() {
+				var key = _svc.generateKeys( "SHA256withECDSA" );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA256withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should validate a signing key for SHA384withECDSA", function() {
+				var key = _svc.generateKeys( "SHA384withECDSA" );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA384withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should validate a signing key for SHA512withECDSA", function() {
+				var key = _svc.generateKeys( "SHA512withECDSA" );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA512withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should return false for something completely different", function() {
+				var key = "not a base64 representation of a char array that will be a valid cert";
+				expect( _svc.validateSigningKey( key, "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( key, "SHA384withECDSA" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( key, "SHA512withECDSA" ) ).toBeFalse();
+			} );
+
+			it( "should return false when key is for a different algorithm than the one provided", function() {
+				var key = _svc.generateKeys( "SHA256withECDSA" );
+
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA384withECDSA" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA512withECDSA" ) ).toBeFalse();
+
+				key = _svc.generateKeys( "SHA384withECDSA" );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA512withECDSA" ) ).toBeFalse();
+
+				key = _svc.generateKeys( "SHA512withECDSA" );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ), "SHA384withECDSA" ) ).toBeFalse();
+			} );
+
+		} );
+
+		describe( "validateVerifyingKey()", function() {
+			it( "should validate a verifying key for SHA256withECDSA", function() {
+				var key = _svc.generateKeys( "SHA256withECDSA" );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA256withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should validate a verifying key for SHA384withECDSA", function() {
+				var key = _svc.generateKeys( "SHA384withECDSA" );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should validate a verifying key for SHA512withECDSA", function() {
+				var key = _svc.generateKeys( "SHA512withECDSA" );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA512withECDSA" ) ).toBeTrue();
+			} );
+
+			it( "should return false for something completely different", function() {
+				var key = "not a base64 representation of a char array that will be a valid cert";
+				expect( _svc.validateVerifyingKey( key, "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( key, "SHA384withECDSA" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( key, "SHA512withECDSA" ) ).toBeFalse();
+			} );
+
+			it( "should return false when key is for a different algorithm than the one provided", function() {
+				var key = _svc.generateKeys( "SHA256withECDSA" );
+
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withECDSA" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA512withECDSA" ) ).toBeFalse();
+
+				key = _svc.generateKeys( "SHA384withECDSA" );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA512withECDSA" ) ).toBeFalse();
+
+				key = _svc.generateKeys( "SHA512withECDSA" );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA256withECDSA" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withECDSA" ) ).toBeFalse();
+			} );
+		} );
 	}
+
 }
