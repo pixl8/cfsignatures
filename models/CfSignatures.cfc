@@ -95,6 +95,34 @@ component {
 		return _services[ Left( arguments.algorithm, 2 ) ].generateKeys( algorithm = algo, argumentCollection=arguments );
 	}
 
+	/**
+	 * Validates a signing key for the given algorithm.
+	 * Returns true if the key is valid, false otherwise.
+	 *
+	 * @key.hint       Base64 encoded signing key.
+	 * @algorithm.hint Algorithm to use for validating the key. Supported algorithms are: ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384, HS512.
+	 */
+	function validateSigningKey( required string key, required string algorithm ) {
+		var algo         = _getAlgorithm( arguments.algorithm );
+		var formattedKey = _services.cert.getBase64EncodedPrivateKey( arguments.key );
+
+		return _services[ Left( arguments.algorithm, 2 ) ].validateSigningKey( formattedKey, algo );
+	}
+
+	/**
+	 * Validates a verifying key for the given algorithm.
+	 * Returns true if the key is valid, false otherwise.
+	 *
+	 * @key.hint       Base64 encoded verifying key.
+	 * @algorithm.hint Algorithm to use for validating the key. Supported algorithms are: ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384, HS512.
+	 */
+	function validateVerifyingKey( required string key, required string algorithm ) {
+		var algo         = _getAlgorithm( arguments.algorithm );
+		var formattedKey = _services.cert.getBase64EncodedPublicKey( arguments.key );
+
+		return _services[ Left( arguments.algorithm, 2 ) ].validateVerifyingKey( formattedKey, algo );
+	}
+
 // PRIVATE HELPERS
 	private function _getAlgorithm( required string algorithm ) {
 		if ( !variables._supportedAlgorithms.keyExists( arguments.algorithm ) ) {

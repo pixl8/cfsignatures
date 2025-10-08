@@ -10,41 +10,15 @@ operations where signatures are used such as [JWT](https://www.rfc-editor.org/rf
 
 ### General
 
-You use this project by getting a singleton instance of the `CfSignatures` object (see ColdBox and Non-Coldbox sections below). Then:
+You use this project by getting a singleton instance of the `CfSignatures` object (see ColdBox and Non-Coldbox sections below). Then calling its methods:
 
-```cfc
-// generate a secret key for Hmac signing
-var mySecretKey = cfsignatures.generateKeys( "HS256" );
+* `sign( payload, signingKey, algorithm )` returns a base64 encoded signature for the string payload using the provided signing key and algorithm.
+* `verify( signature, payload, verifyingKey, algorithm )` returns true if the signature is valid for the given payload, verifyingKey and algorithm, false otherwise.
+* `generateKeys( algorithm )`: For HS* algorithm, returns a new base64 encoded shared secret key. For RS* ES* algorithm, returns a struct with `privateKey` and `publicKey` in PEM format
+* `validateSigningKey( key, algorithm )` returns true if the provided base64 or PEM encoded signing key is valid for the provided algorithm.
+* `validateVerifyingKey( key, algorithm )` returns true if the provided base64 or PEM encoded verification key is valid for the provided algorithm.
 
-// sign a payload using Hmac + signing key
-var mySig = cfsignatures.sign(
-	  payload    = myInputString
-	, signingKey = mySecretKey
-	, algorithm  = "HS256"
-);
-
-// verify an incoming signature using Hmac + signing key
-var isValid = cfsignatures.verify(
-	  signature    = signatureToVerify
-	, payload      = myInputString
-	, verifyingKey = mySecretKey
-	, algorithm    = "HS256"
-);
-
-// for RSA/ECDSA
-var keyPair = cfsignatures.generateKeys( "ES256" );
-var mySig = cfsignatures.sign(
-	  payload    = myInputString
-	, signingKey = keyPair.privatekey
-	, algorithm  = "ES256"
-);
-var isValid = cfsignatures.verify(
-	  signature    = signatureToVerify
-	, payload      = myInputString
-	, verifyingKey = keyPair.publickey
-	, algorithm    = "ES256"
-);
-```
+**Note for RS + ES algorithms**: these are asynchronous algorithms that use a private and public key pair. The private key is always used for _signing_. The public key is always used for _verification_.
 
 ### Coldbox
 

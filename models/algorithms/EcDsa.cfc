@@ -32,6 +32,30 @@ component extends="Rsa" {
 		};
 	}
 
+	function validateSigningKey( required string key, required string algorithm ) {
+		var keyLen   = ArrayLen( ToBinary( arguments.key ) );
+		var lenMap   = {
+			  SHA256withECDSA = 67
+			, SHA384withECDSA = 80
+			, SHA512withECDSA = 98
+		};
+		var validLen = lenMap[ arguments.algorithm ] == keyLen;
+
+		return validLen && super.validateSigningKey( arguments.key );
+	}
+
+	function validateVerifyingKey( required string key, required string algorithm ) {
+		var keyLen = ArrayLen( ToBinary( arguments.key ) );
+		var lenMap = {
+			  SHA256withECDSA = 91
+			, SHA384withECDSA = 120
+			, SHA512withECDSA = 158
+		};
+		var validLen = lenMap[ arguments.algorithm ] == keyLen;
+
+		return validLen && super.validateVerifyingKey( arguments.key );
+	}
+
 // PRIVATE HELPERS
 	private string function _formatSignature( bytes ){
 		var idx = 1;

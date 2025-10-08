@@ -101,5 +101,55 @@ component extends="testbox.system.BaseSpec" {
 				) ).toBeTrue();
 			} );
 		} );
+
+		describe( "validateSigningKey()", function() {
+			it( "should validate that the key is be a valid RSA private key", function() {
+				var key = _svc.generateKeys( "SHA256withRSA", 1024 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeTrue();
+				key = _svc.generateKeys( "SHA256withRSA", 2048 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeTrue();
+				key = _svc.generateKeys( "SHA256withRSA", 4096 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeTrue();
+			} );
+
+			it( "should return false for RSA public keys", function() {
+				var key = _svc.generateKeys( "SHA384withRSA", 1024 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withRSA" ) ).toBeFalse();
+				key = _svc.generateKeys( "SHA384withRSA", 2048 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withRSA" ) ).toBeFalse();
+				key = _svc.generateKeys( "SHA384withRSA", 4096 );
+				expect( _svc.validateSigningKey( _formatter.getBase64EncodedPublicKey( key.publicKey ), "SHA384withRSA" ) ).toBeFalse();
+			} );
+
+			it( "should return false for something completely different", function() {
+				var key = "not a base64 representation of a char array that will be a valid cert";
+				expect( _svc.validateSigningKey( key ) ).toBeFalse();
+			} );
+		} );
+
+		describe( "validateVerifyingKey()", function() {
+			it( "should validate that the key is a valid RSA public key", function() {
+				var key = _svc.generateKeys( "SHA256withRSA", 1024 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ) ) ).toBeTrue();
+				key = _svc.generateKeys( "SHA256withRSA", 2048 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ) ) ).toBeTrue();
+				key = _svc.generateKeys( "SHA256withRSA", 4096 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPublicKey( key.publicKey ) ) ).toBeTrue();
+			} );
+
+			it( "should return false for RSA private keys", function() {
+				var key = _svc.generateKeys( "SHA384withRSA", 1024 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeFalse();
+				key = _svc.generateKeys( "SHA384withRSA", 2048 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeFalse();
+				key = _svc.generateKeys( "SHA384withRSA", 4096 );
+				expect( _svc.validateVerifyingKey( _formatter.getBase64EncodedPrivateKey( key.privateKey ) ) ).toBeFalse();
+			} );
+
+			it( "should return false for something completely different", function() {
+				var key = "not a base64 representation of a char array that will be a valid cert";
+				expect( _svc.validateVerifyingKey( key ) ).toBeFalse();
+			} );
+		} );
 	}
 }
