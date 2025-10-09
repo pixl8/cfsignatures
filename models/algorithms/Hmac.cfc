@@ -40,10 +40,10 @@ component {
 				keyGen.init( 256 );
 			break;
 			case "HmacSHA384":
-				keyGen.init(384);
+				keyGen.init( 384 );
 			break;
 			case "HmacSHA512":
-				keyGen.init(512);
+				keyGen.init( 512 );
 			break;
 		}
 
@@ -68,11 +68,11 @@ component {
 
 		switch( arguments.algorithm ) {
 			case "HmacSHA256":
-				return keyLen == 32;
+				return keyLen >= 32;
 			case "HmacSHA384":
-				return keyLen == 48;
+				return keyLen >= 48;
 			case "HmacSHA512":
-				return keyLen == 64;
+				return keyLen >= 64;
 		}
 
 		return false;
