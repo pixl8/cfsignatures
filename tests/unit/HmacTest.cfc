@@ -95,58 +95,51 @@ component extends="testbox.system.BaseSpec" {
 		} );
 
 		describe( "validateSigningKey() + validateVerifyingKey()", function() {
-			it( "should validate a signing key for HmacSHA256", function() {
+			it( "should validate a signing key generated with all the hmac algorithms", function() {
 				var key = _svc.generateKeys( "HmacSHA256" );
+
 				expect( _svc.validateSigningKey( key, "HmacSHA256" ) ).toBeTrue();
 				expect( _svc.validateVerifyingKey( key, "HmacSHA256" ) ).toBeTrue();
-			} );
 
-			it( "should return false when key is not a base64 representation of a 32 byte array", function() {
-				var key = "not a base64 representation of a 32 byte array";
-				expect( _svc.validateSigningKey( key, "HmacSHA256" ) ).toBeFalse();
-				expect( _svc.validateVerifyingKey( key, "HmacSHA256" ) ).toBeFalse();
-			} );
-
-			it( "should return false when key is not a base64 representation of a 32 byte array", function() {
-				var key = _svc.generateKeys( "HmacSHA384" );
-				expect( _svc.validateSigningKey( key, "HmacSHA256" ) ).toBeFalse();
-				expect( _svc.validateVerifyingKey( key, "HmacSHA256" ) ).toBeFalse();
-			} );
-
-			it( "should validate a signing key for HmacSHA384", function() {
 				var key = _svc.generateKeys( "HmacSHA384" );
 				expect( _svc.validateSigningKey( key, "HmacSHA384" ) ).toBeTrue();
 				expect( _svc.validateVerifyingKey( key, "HmacSHA384" ) ).toBeTrue();
-			} );
 
-			it( "should return false when key is not a base64 representation of a 64 byte array", function() {
-				var key = "not a base64 representation of a 64 byte array";
-				expect( _svc.validateSigningKey( key, "HmacSHA384" ) ).toBeFalse();
-				expect( _svc.validateVerifyingKey( key, "HmacSHA384" ) ).toBeFalse();
-			} );
-
-			it( "should return false when key is not a base64 representation of a 64 byte array", function() {
-				var key = _svc.generateKeys( "HmacSHA512" );
-				expect( _svc.validateSigningKey( key, "HmacSHA384" ) ).toBeFalse();
-				expect( _svc.validateVerifyingKey( key, "HmacSHA384" ) ).toBeFalse();
-			} );
-
-			it( "should validate a signing key for HmacSHA512", function() {
 				var key = _svc.generateKeys( "HmacSHA512" );
 				expect( _svc.validateSigningKey( key, "HmacSHA512" ) ).toBeTrue();
 				expect( _svc.validateVerifyingKey( key, "HmacSHA512" ) ).toBeTrue();
 			} );
 
-			it( "should return false when key is not a base64 representation of a 128 byte array", function() {
-				var key = "not a base64 representation of a 64 byte array";
+
+			it( "should return false when key is too short for HS256", function() {
+				var key = "tooshort";
+
+				expect( _svc.validateSigningKey( key, "HmacSHA256" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( key, "HmacSHA256" ) ).toBeFalse();
+			} );
+
+			it( "should return false when key is too short for HS384", function() {
+				var key = _svc.generateKeys( "HmacSHA256" );
+				expect( _svc.validateSigningKey( key, "HmacSHA384" ) ).toBeFalse();
+				expect( _svc.validateVerifyingKey( key, "HmacSHA384" ) ).toBeFalse();
+			} );
+
+			it( "should return false when key is too short for HS512", function() {
+				var key = _svc.generateKeys( "HmacSHA256" );
 				expect( _svc.validateSigningKey( key, "HmacSHA512" ) ).toBeFalse();
 				expect( _svc.validateVerifyingKey( key, "HmacSHA512" ) ).toBeFalse();
 			} );
 
-			it( "should return false when key is not a base64 representation of a 128 byte array", function() {
-				var key = _svc.generateKeys( "HmacSHA384" );
-				expect( _svc.validateSigningKey( key, "HmacSHA512" ) ).toBeFalse();
-				expect( _svc.validateVerifyingKey( key, "HmacSHA512" ) ).toBeFalse();
+			it( "should return true when the key is longer than necessary", function(){
+				var key = _svc.generateKeys( "HmacSHA512" );
+				expect( _svc.validateSigningKey( key & "somemore", "HmacSHA512" ) ).toBeTrue();
+				expect( _svc.validateVerifyingKey( key & "somemore", "HmacSHA512" ) ).toBeTrue();
+				expect( _svc.validateSigningKey( key, "HmacSHA384" ) ).toBeTrue();
+				expect( _svc.validateVerifyingKey( key, "HmacSHA384" ) ).toBeTrue();
+				expect( _svc.validateSigningKey( key, "HmacSHA256" ) ).toBeTrue();
+				expect( _svc.validateVerifyingKey( key, "HmacSHA256" ) ).toBeTrue();
+
+
 			} );
 		} );
 	}

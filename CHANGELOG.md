@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1
+
+* Fix hmac key validation logic.
+
 ## v1.1.0
 
 * Add `validateSigningKey( key, algorithm )` method for validating incoming signing keys
