@@ -40,7 +40,7 @@ jobs:
         uses: Ortus-Solutions/setup-commandbox@v2.0.1
 
       - name: Install dependencies
-        uses: pixl8/github-action-box-install@v2
+        run: box install --force --verbose
 
       - name: Start ${{ matrix.cfengine }} Server
         run: |
