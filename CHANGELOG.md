@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0
+
+* Add test matrix for various engines in CI pipeline
+* Fixes for boxlang
+
 ## v1.1.1
 
 * Fix hmac key validation logic.
