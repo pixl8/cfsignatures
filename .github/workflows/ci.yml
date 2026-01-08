@@ -3,42 +3,80 @@ on:
   push:
   pull_request:
 jobs:
-  ci:
-    name: CI for CfSignatures
+  runtests:
+    name: Run test matrix
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[twgit] Init') && github.ref != 'refs/heads/stable'"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cfengine: "lucee@5.4"
+            jdkVersion: "11"
+            experimental: false
+          - cfengine: "lucee@6.2"
+            jdkVersion: "21"
+            experimental: false
+          - cfengine: "lucee@7.0"
+            jdkVersion: "24"
+            experimental: false
+          - cfengine: "boxlang@stable"
+            jdkVersion: "24"
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
     steps:
-      - name: Setup flow variables
-        run: |
-          branch=${GITHUB_REF##*/}
-          publish=false
-          if [[ "{{ env.event.name }}" != "pull_request" ]] ; then
-            if [[ $branch == release-* ]] || [[ $branch == v* ]] ; then
-              publish=true
-            fi
-          fi
-          echo "PUBLISH=$publish" >> $GITHUB_ENV
-
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ matrix.jdkVersion }}
+
+      - name: Setup CommandBox CLI
+        uses: Ortus-Solutions/setup-commandbox@v2.0.1
+
       - name: Install dependencies
         uses: pixl8/github-action-box-install@v2
 
+      - name: Start ${{ matrix.cfengine }} Server
+        run: |
+          # Startup the Server
+          box server start directory="${GITHUB_WORKSPACE}/tests" serverConfigFile="${GITHUB_WORKSPACE}/tests/server-cfsignaturestests.json" cfengine="${{ matrix.cfengine }}" --noSaveSettings --debug
+          # Test site build up
+          curl http://127.0.0.1:6555
+
       - name: Run tests
-        uses: pixl8/github-action-box-test@v3
-        with:
-          test_dir: /tests
-          test_server_json: /tests/server-cfsignaturestests.json
-          output_file: /tests/test-results.txt
+        run: |
+          mkdir -p tests/results
+          exitcode=0
+          box testbox run --verbose outputFile=tests/results/test-results outputFormats=json,antjunit
 
       - name: Upload Test Results Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: tests/test-results.txt
+          name: cfsignatures-test-results-${{ matrix.cfengine }}-jdk${{ matrix.jdkVersion }}
+          path: |
+            tests/results/*
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: tests/results/*.xml
+  publish:
+    name: Publish
+    needs: runtests
+    runs-on: ubuntu-latest
+    if: "success() && github.event_name != 'pull_request' && ( startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/release-' ) )"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Generate release version number
         if: "env.PUBLISH == 'true'"
