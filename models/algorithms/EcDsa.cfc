@@ -33,7 +33,12 @@ component extends="Rsa" {
 	}
 
 	function validateSigningKey( required string key, required string algorithm ) {
-		var keyLen   = ArrayLen( ToBinary( arguments.key ) );
+		try {
+			var keyLen = ArrayLen( ToBinary( arguments.key ) );
+		} catch( any e ) {
+			return false;
+		}
+
 		var lenMap   = {
 			  SHA256withECDSA = 67
 			, SHA384withECDSA = 80
@@ -45,7 +50,12 @@ component extends="Rsa" {
 	}
 
 	function validateVerifyingKey( required string key, required string algorithm ) {
-		var keyLen = ArrayLen( ToBinary( arguments.key ) );
+		try {
+			var keyLen = ArrayLen( ToBinary( arguments.key ) );
+		} catch( any e ) {
+			return false;
+		}
+
 		var lenMap = {
 			  SHA256withECDSA = 91
 			, SHA384withECDSA = 120

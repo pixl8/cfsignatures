@@ -1,0 +1,8 @@
+{
+    "app":{
+        "cfengine":"lucee@7"
+    },
+    "web":{
+        "webroot":"/"
+    }
+}
